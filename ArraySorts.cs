@@ -8,7 +8,7 @@ namespace Algorithms
 {
     public static class ArraySorts
     {
-        public static int[] BubbleSort(int[] array)
+        public static void BubbleSort(int[] array)
         {
             var length = array.Length - 1;
             for (int i = 0; i < length; i++)
@@ -19,13 +19,48 @@ namespace Algorithms
                         (array[j], array[j + 1]) = (array[j + 1], array[j]);
                 }
             }
-            return array;
+        }
+        public static void HeapSort(int[] array)
+        {
+            BuildMaxHeap(array);
+
+            for (int i = array.Length - 1; i > 0; i--)
+            {
+                (array[0], array[i]) = (array[i], array[0]);
+                Heap(array, i, 0);
+            }
         }
         public static int[] MergeSort(int[] array)
             => MergeSortedArrays(
-                DoMergeSort(array.Take(array.Length / 2).ToArray()), 
+                DoMergeSort(array.Take(array.Length / 2).ToArray()),
                 DoMergeSort(array.Skip(array.Length / 2).ToArray())
             );
+        #region Heap sort
+        private static void BuildMaxHeap(int[] array)
+        {
+            for (int i = array.Length / 2 - 1; i >= 0; i--)
+                Heap(array, array.Length, i);
+        }
+        private static void Heap(int[] arr, int maxIndex, int startIndex)
+        {
+            int largestIndex = startIndex;
+            int left = 2 * startIndex + 1;
+            int right = 2 * startIndex + 2;
+
+            if (left < maxIndex && arr[left] > arr[largestIndex])
+                largestIndex = left;
+
+            if (right < maxIndex && arr[right] > arr[largestIndex])
+                largestIndex = right;
+            
+            if (largestIndex != startIndex)
+            {
+                (arr[startIndex], arr[largestIndex]) = (arr[largestIndex], arr[startIndex]);
+                Heap(arr, maxIndex, largestIndex);
+            }
+        }
+        #endregion
+        #region Merge sort
         private static int[] DoMergeSort(int[] array)
         {
             if (array.Length < 3)
@@ -62,5 +97,6 @@ namespace Algorithms
             }
             return answer;
         }
+        #endregion
     }
 }
